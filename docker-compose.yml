@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # 1. Database (PostgreSQL + pgvector)
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # 2. Backend (Rails API)
+  backend:
+    build: ./backend
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./backend:/rails
+    ports:
+      - "8000:3000" # ホストの8000ポートをコンテナの3000ポートにマッピング
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/summonday_development
+      DB_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+
+  # 3. Frontend (Next.js)
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # ローカルの node_modules をコンテナの node_modules にマッピングして、コンテナ内の node_modules を更新する
+    ports:
+      - "3000:3000"
+    environment:
+      - WATCHPACK_POLLING=true # windows/macOS用ファイル変更検知
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

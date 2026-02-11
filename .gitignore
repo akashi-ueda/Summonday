@@ -2,8 +2,14 @@
 .DS_Store
 
 # Environment files
-.env*
+.env
+.env.local
+.env.*.local
 *.pem
+
+# Allow example env files
+!.env.example
+!**/.env.example
 
 # Backend (Rails)
 backend/.bundle
@@ -11,12 +17,11 @@ backend/log/*
 !backend/log/.keep
 backend/tmp/*
 !backend/tmp/.keep
-!backend/tmp/pids/
+backend/tmp/pids/*
 !backend/tmp/pids/.keep
 backend/storage/*
 !backend/storage/.keep
 backend/tmp/storage/*
-!backend/tmp/storage/
 !backend/tmp/storage/.keep
 backend/config/*.key
 
