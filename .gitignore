@@ -1,0 +1,44 @@
+# OS files
+.DS_Store
+
+# Environment files
+.env*
+*.pem
+
+# Backend (Rails)
+backend/.bundle
+backend/log/*
+!backend/log/.keep
+backend/tmp/*
+!backend/tmp/.keep
+!backend/tmp/pids/
+!backend/tmp/pids/.keep
+backend/storage/*
+!backend/storage/.keep
+backend/tmp/storage/*
+!backend/tmp/storage/
+!backend/tmp/storage/.keep
+backend/config/*.key
+
+# Frontend (Next.js)
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.*
+frontend/.yarn/*
+!frontend/.yarn/patches
+!frontend/.yarn/plugins
+!frontend/.yarn/releases
+!frontend/.yarn/versions
+frontend/coverage
+frontend/.next/
+frontend/out/
+frontend/build
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+frontend/.vercel
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
