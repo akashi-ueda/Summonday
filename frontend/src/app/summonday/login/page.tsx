@@ -1,19 +1,27 @@
-import { loginAction } from "../actions";
+import Image from "next/image";
+import { LoginForm } from "./components/LoginForm";
+import { BackgroundEffects } from "./components/BackgroundEffects";
 
 export default function LoginPage() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-background text-foreground">
-            <h1 className="text-4xl font-bold mb-6">로그인</h1>
-            <p className="mb-8 opacity-70">Summonday에 오신 것을 환영합니다.</p>
+        <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+            {/* Background landscape - Server Side (except next/image optimization) */}
+            <div className="absolute inset-0">
+                <Image
+                    src="/images/landscape.png"
+                    alt="Sunrise landscape with mountains and a winding path"
+                    fill
+                    priority
+                    className="object-cover"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-[#1a1a2e]/60 via-[#1a1a2e]/20 to-transparent" />
+            </div>
 
-            <form action={loginAction} className="w-full max-w-sm">
-                <button
-                    type="submit"
-                    className="w-full py-2 px-4 bg-foreground text-background rounded-lg font-medium hover:opacity-90 transition-opacity cursor-pointer"
-                >
-                    로그인 (데모)
-                </button>
-            </form>
+            {/* Client-side Login Card */}
+            <LoginForm />
+
+            {/* Client-side Decorative Elements */}
+            <BackgroundEffects />
         </div>
     );
 }
