@@ -1,8 +1,15 @@
 import Image from "next/image";
 import { LoginForm } from "./components/LoginForm";
 import { BackgroundEffects } from "./components/BackgroundEffects";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+    const cookieStore = await cookies();
+    if (cookieStore.get("session")) {
+        redirect("/summonday/dashboard");
+    }
+
     return (
         <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
             {/* Background landscape - Server Side (except next/image optimization) */}

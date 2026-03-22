@@ -1,0 +1,17 @@
+### 습관 생성
+POST http://localhost:8000/api/v1/tasks
+Content-Type: application/json
+
+{
+  "title": "30분 달리기",
+  "user_id": 1
+}
+
+### 목표 생성
+POST http://localhost:8000/api/v1/goals
+Content-Type: application/json
+
+{
+  "title": "5kg 감량",
+  "user_id": 1
+}
