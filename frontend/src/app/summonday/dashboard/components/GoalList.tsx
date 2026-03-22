@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Target } from "lucide-react";
+import GoalCharacter from "./GoalCharacter";
 
 interface Goal {
     id: number;
@@ -39,8 +40,16 @@ export default function GoalList({ goals }: GoalListProps) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="rounded-2xl border border-white/10 bg-black/40 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[160px]"
+                        className="rounded-2xl border border-white/10 bg-black/40 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[200px]"
                     >
+                        <div className="flex flex-col items-center mb-4">
+                            <GoalCharacter
+                                progress={Math.round((goal.current_xp / goal.target_xp) * 100)}
+                                title={goal.title}
+                                size={88}
+                            />
+                        </div>
+                        
                         <div className="flex justify-between items-start mb-4 gap-4">
                             <h4 className="text-lg font-medium text-white line-clamp-2 leading-tight">
                                 {goal.title}

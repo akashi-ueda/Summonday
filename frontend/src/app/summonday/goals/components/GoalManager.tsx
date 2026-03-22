@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { abandonGoalAction, restoreGoalAction } from "../../actions";
 import { Target, Archive, RefreshCw, XCircle, Loader2 } from "lucide-react";
+import GoalCharacter from "../../dashboard/components/GoalCharacter";
 
 interface Goal {
     id: number;
@@ -45,6 +46,13 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
             className={`rounded-2xl border ${isAbandoned ? 'border-zinc-800 bg-zinc-900/50' : 'border-white/10 bg-black/40'} p-6 shadow-xl backdrop-blur-md flex flex-col justify-between`}
         >
             <div>
+                <div className="flex flex-col items-center mb-4">
+                    <GoalCharacter
+                        progress={Math.round((goal.current_xp / goal.target_xp) * 100)}
+                        title={isAbandoned ? "" : goal.title}
+                        size={80}
+                    />
+                </div>
                 <div className="flex justify-between items-start mb-3 gap-2">
                     <h4 className={`text-lg font-medium line-clamp-2 leading-tight ${isAbandoned ? 'text-zinc-500 line-through' : 'text-white'}`}>
                         {goal.title}

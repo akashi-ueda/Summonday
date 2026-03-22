@@ -8,18 +8,27 @@ import { loginAction, signupAction } from "../../actions";
 export function LoginForm() {
     const [isLogin, setIsLogin] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     async function handleSubmit(formData: FormData) {
         setIsLoading(true);
         setError(null);
+        setSuccess(null);
         try {
             const res = isLogin ? await loginAction(formData) : await signupAction(formData);
             if (res?.error) {
                 setError(res.error);
+            } else {
+                setSuccess(isLogin ? "로그인 성공! 대시보드로 이동합니다." : "회원가입 성공! 환영합니다.");
             }
         } catch (e: any) {
-            setError(e.message || "Something went wrong.");
+            // Next.js redirect() throws an error to perform the redirect, which we ignore/treat as success.
+            if (e.message?.includes("NEXT_REDIRECT")) {
+                setSuccess(isLogin ? "로그인 성공! 대시보드로 이동합니다." : "회원가입 성공! 환영합니다.");
+            } else {
+                setError(e.message || "Something went wrong.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -40,8 +49,8 @@ export function LoginForm() {
                     transition={{ delay: 0.2, duration: 0.5 }}
                     className="mb-8 flex flex-col items-center"
                 >
-                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/30">
-                        <Map className="h-8 w-8 text-primary-foreground" />
+                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/30 font-black text-3xl text-white">
+                        S
                     </div>
                     <h1 className="font-display text-4xl font-bold tracking-tight text-[hsl(0,0%,100%)]">
                         Summonday
@@ -117,11 +126,21 @@ export function LoginForm() {
 
                     {error && (
                         <motion.p 
-                            initial={{ opacity: 0 }} 
-                            animate={{ opacity: 1 }} 
-                            className="text-xs text-red-300 text-center bg-red-500/20 py-2 rounded-lg"
+                            initial={{ opacity: 0, scale: 0.95 }} 
+                            animate={{ opacity: 1, scale: 1 }} 
+                            className="text-sm font-medium text-red-100 text-center bg-red-600/40 border border-red-500/50 py-3 px-4 rounded-xl shadow-lg backdrop-blur-sm"
                         >
                             {error}
+                        </motion.p>
+                    )}
+
+                    {success && (
+                        <motion.p 
+                            initial={{ opacity: 0, scale: 0.95 }} 
+                            animate={{ opacity: 1, scale: 1 }} 
+                            className="text-sm font-medium text-emerald-50 text-center bg-emerald-600/40 border border-emerald-500/50 py-3 px-4 rounded-xl shadow-lg backdrop-blur-sm"
+                        >
+                            {success}
                         </motion.p>
                     )}
 

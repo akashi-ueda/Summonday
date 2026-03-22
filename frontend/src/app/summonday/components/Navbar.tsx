@@ -7,7 +7,7 @@ export default function Navbar({ user }: { user: { name: string; email: string }
         <nav className="fixed top-0 inset-x-0 h-16 bg-black/40 backdrop-blur-xl border-b border-white/5 z-50 flex items-center justify-between px-6 lg:px-12">
             <div className="flex items-center gap-6">
                 <Link href="/summonday/dashboard" className="text-white font-bold tracking-tight text-xl hover:text-primary transition-colors flex items-center gap-2">
-                    <span className="bg-primary text-black w-8 h-8 rounded-lg flex items-center justify-center font-black">S</span>
+                    <span className="bg-primary text-white w-8 h-8 rounded-lg flex items-center justify-center font-black">S</span>
                     Summonday
                 </Link>
             </div>

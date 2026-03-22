@@ -33,85 +33,65 @@ export default function TaskPrompt({ user }: TaskPromptProps) {
     }
 
     return (
-        <div className="w-full max-w-xl mx-auto space-y-6">
-            <div className="rounded-2xl border border-primary/20 bg-primary/5 px-6 py-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-                <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
-                
-                <div className="mb-6 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary">
-                        <Footprints className="h-5 w-5" />
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-semibold text-white tracking-tight">오늘 어떤 습관을 실천하셨나요?</h2>
-                        <p className="text-sm text-white/60 mt-1">사소한 행동도 모이면 큰 목표를 달성할 수 있습니다.</p>
-                    </div>
-                </div>
-
-                <form onSubmit={handleSubmit} className="relative group flex items-center">
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        disabled={isLoading}
-                        placeholder="예: 물 1잔 마시기, 스쿼트 10개 하기"
-                        className="w-full h-14 pl-5 pr-14 rounded-xl border border-primary/20 bg-black/40 text-base text-white placeholder:text-white/40 transition-all focus:border-primary/50 focus:bg-white/10 focus:outline-none focus:ring-1 focus:ring-primary/50 disabled:opacity-50"
-                    />
-                    <button
-                        type="submit"
-                        disabled={isLoading || !title.trim()}
-                        className="absolute right-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-30 disabled:hover:bg-primary shrink-0"
+        <div className="w-full">
+            {/* 피드백 - 입력창 위에 浮동 팝업 */}
+            <AnimatePresence mode="popLayout">
+                {result && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        className="mb-3"
                     >
-                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-4 w-4" />}
-                    </button>
-                </form>
-
-                <AnimatePresence mode="popLayout">
-                    {result && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10, height: 0 }}
-                            animate={{ opacity: 1, y: 0, height: "auto" }}
-                            exit={{ opacity: 0, y: -10, height: 0 }}
-                            className="mt-6"
-                        >
-                            {result.success ? (
-                                <div className="rounded-xl border border-primary/30 bg-primary/10 p-5 space-y-4">
-                                    <div className={`flex gap-3 items-center ${result.affected_goals && result.affected_goals.length > 0 ? "border-b border-primary/20 pb-4" : ""}`}>
-                                        <Sparkles className="h-5 w-5 text-primary shrink-0" />
-                                        <div>
-                                            <h4 className="text-sm font-semibold text-white">{result.message}</h4>
-                                            <p className="text-sm text-primary/80 mt-1 flex items-center gap-2">
-                                                <span className="font-medium bg-primary/20 text-primary px-2 py-0.5 rounded-md">
-                                                    +{result.task.xp} XP
-                                                </span>
-                                                획득!
-                                            </p>
-                                        </div>
-                                    </div>
-                                    
-                                    {result.affected_goals && result.affected_goals.length > 0 && (
-                                        <div className="pt-2">
-                                            <p className="text-xs font-medium text-white/50 mb-3 uppercase tracking-wider">이 습관이 도움을 준 목표</p>
-                                            <div className="space-y-3">
-                                                {result.affected_goals.map((g: any) => (
-                                                    <div key={g.id} className="flex justify-between items-center text-sm bg-black/20 p-3 rounded-lg border border-white/5">
-                                                        <span className="text-white/90 font-medium truncate pr-4">{g.title}</span>
-                                                        <span className="text-primary font-bold bg-primary/20 px-2 py-1 rounded shrink-0">+{g.xp_gained} XP</span>
-                                                    </div>
-                                                ))}
+                        {result.success ? (
+                            <div className="rounded-xl border border-primary/30 bg-zinc-900/90 backdrop-blur-lg p-4 shadow-2xl space-y-3">
+                                <div className="flex gap-3 items-center">
+                                    <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                                    <span className="text-sm font-semibold text-white">{result.message}</span>
+                                    <span className="ml-auto font-bold bg-primary/20 text-primary text-xs px-2 py-0.5 rounded-md">+{result.task?.xp} XP</span>
+                                </div>
+                                {result.affected_goals && result.affected_goals.length > 0 && (
+                                    <div className="space-y-1.5 pt-2 border-t border-white/10">
+                                        {result.affected_goals.map((g: any) => (
+                                            <div key={g.id} className="flex justify-between items-center text-xs bg-black/30 px-3 py-1.5 rounded-lg">
+                                                <span className="text-white/80 truncate pr-4">{g.title}</span>
+                                                <span className="text-primary font-bold shrink-0">+{g.xp_gained} XP</span>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 flex items-start gap-3">
-                                    <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
-                                    <p className="text-sm text-red-100/80">{result.error}</p>
-                                </div>
-                            )}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="rounded-xl border border-red-500/30 bg-zinc-900/90 backdrop-blur-lg p-4 flex items-start gap-3 shadow-2xl">
+                                <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+                                <p className="text-sm text-red-200">{result.error}</p>
+                            </div>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* 입력창 */}
+            <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0 text-primary">
+                    <Footprints className="h-5 w-5" />
+                </div>
+                <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    disabled={isLoading}
+                    placeholder="오늘 실천한 습관을 입력하세요..."
+                    className="flex-1 h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 transition-all focus:border-primary/50 focus:bg-white/10 focus:outline-none focus:ring-1 focus:ring-primary/30 disabled:opacity-50"
+                />
+                <button
+                    type="submit"
+                    disabled={isLoading || !title.trim()}
+                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-30 shrink-0"
+                >
+                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                </button>
+            </form>
         </div>
     );
 }
