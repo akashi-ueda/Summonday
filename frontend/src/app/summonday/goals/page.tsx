@@ -27,20 +27,20 @@ export default async function GoalsPage() {
 
             <main className="relative z-10 ml-20 lg:ml-64 min-h-screen flex flex-col">
                 <header className="px-10 pt-14 pb-8 border-b border-white/5">
-                    <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-white mb-1">목표 관리</h1>
-                    <p className="text-zinc-400 text-sm">진행 중인 목표를 점검하고, 포기했던 목표를 언제든 다시 시작할 수 있습니다.</p>
+                    <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-white mb-1">目標管理</h1>
+                    <p className="text-zinc-400 text-sm">進行中の目標を確認し、断念した目標をいつでも再開できます。</p>
                 </header>
 
                 <div className="flex-1 px-10 py-8 space-y-10">
-                    {/* 새 목표 추가 */}
+                    {/* 新規目標追加 */}
                     <section>
-                        <h2 className="text-lg font-semibold text-white mb-4">새 목표 추가</h2>
+                        <h2 className="text-lg font-semibold text-white mb-4">新規目標追加</h2>
                         <GoalPrompt user={user} />
                     </section>
 
-                    {/* 목표 목록 */}
+                    {/* 目標一覧 */}
                     <section>
-                        <h2 className="text-lg font-semibold text-white mb-4">목표 목록</h2>
+                        <h2 className="text-lg font-semibold text-white mb-4">目標一覧</h2>
                         <GoalManager activeGoals={activeGoals} abandonedGoals={abandonedGoals} />
                     </section>
                 </div>

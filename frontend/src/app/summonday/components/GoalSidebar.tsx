@@ -24,20 +24,20 @@ export default function GoalSidebar({ goals }: GoalSidebarProps) {
             <div className="h-16 flex items-center px-5 border-b border-white/5 shrink-0 justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold text-white">
                     <Target className="w-4 h-4 text-primary" />
-                    내 목표
+                    私の目標
                     <span className="ml-1 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-bold">{goals.length}</span>
                 </div>
                 <Link href="/summonday/goals" className="text-xs text-zinc-500 hover:text-primary transition-colors">
-                    관리하기 →
+                    管理する →
                 </Link>
             </div>
 
             <div className="flex-1 overflow-y-auto py-4 px-3 space-y-3">
                 {goals.length === 0 ? (
                     <div className="py-12 text-center">
-                        <p className="text-zinc-600 text-sm">아직 목표가 없습니다.</p>
+                        <p className="text-zinc-600 text-sm">まだ目標がありません。</p>
                         <Link href="/summonday/goals" className="text-xs text-primary hover:underline mt-2 inline-block">
-                            첫 목표 만들기 →
+                            最初の目標を作る →
                         </Link>
                     </div>
                 ) : (
@@ -52,7 +52,7 @@ export default function GoalSidebar({ goals }: GoalSidebarProps) {
                                 className="rounded-xl border border-white/8 bg-black/30 p-4 hover:border-primary/20 transition-colors"
                             >
                                 <div className="flex items-center gap-3 mb-3">
-                                    <GoalCharacter progress={progress} title={goal.title} size={52} />
+                                    <GoalCharacter currentXp={goal.current_xp} title={goal.title} size={52} />
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-medium text-white leading-tight line-clamp-2">{goal.title}</p>
                                         <p className="text-xs text-zinc-500 mt-0.5">{goal.current_xp.toLocaleString()} / {goal.target_xp.toLocaleString()} XP</p>

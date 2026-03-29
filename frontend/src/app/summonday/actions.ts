@@ -76,7 +76,7 @@ export async function createGoalAction(title: string, userId: number) {
 
     if (!res.ok) {
         const err = await res.json();
-        return { error: err.error || "목표를 생성하는 중 오류가 발생했습니다." };
+        return { error: err.error || "目標の作成中にエラーが発生しました。" };
     }
 
     const data = await res.json();
@@ -108,7 +108,7 @@ export async function createTaskAction(title: string, userId: number) {
 
     if (!res.ok) {
         const err = await res.json();
-        return { error: err.error || "태스크를 생성하는 중 오류가 발생했습니다." };
+        return { error: err.error || "タスクの作成中にエラーが発生しました。" };
     }
 
     const data = await res.json();
@@ -119,7 +119,7 @@ export async function createTaskAction(title: string, userId: number) {
 
 export async function abandonGoalAction(goalId: number) {
     const res = await fetch(`${BACKEND_URL}/api/v1/goals/${goalId}/abandon`, { method: "PATCH" });
-    if (!res.ok) return { error: "목표 포기에 실패했습니다." };
+    if (!res.ok) return { error: "目標の断念に失敗しました。" };
     // @ts-ignore
     revalidateTag('goals');
     revalidatePath('/summonday/dashboard');
@@ -129,7 +129,17 @@ export async function abandonGoalAction(goalId: number) {
 
 export async function restoreGoalAction(goalId: number) {
     const res = await fetch(`${BACKEND_URL}/api/v1/goals/${goalId}/restore`, { method: "PATCH" });
-    if (!res.ok) return { error: "목표 복구에 실패했습니다." };
+    if (!res.ok) return { error: "目標の復元に失敗しました。" };
+    // @ts-ignore
+    revalidateTag('goals');
+    revalidatePath('/summonday/dashboard');
+    revalidatePath('/summonday/goals');
+    return { success: true };
+}
+
+export async function setMainGoalAction(goalId: number) {
+    const res = await fetch(`${BACKEND_URL}/api/v1/goals/${goalId}/set_main`, { method: "PATCH" });
+    if (!res.ok) return { error: "メイン目標の設定に失敗しました。" };
     // @ts-ignore
     revalidateTag('goals');
     revalidatePath('/summonday/dashboard');

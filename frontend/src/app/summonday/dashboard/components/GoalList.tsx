@@ -21,16 +21,16 @@ export default function GoalList({ goals }: GoalListProps) {
     if (!goals || goals.length === 0) return null;
 
     const getDifficultyLabel = (diff: number | string) => {
-        if (diff === 0 || diff === "easy") return "하";
-        if (diff === 1 || diff === "medium") return "중";
-        return "상";
+        if (diff === 0 || diff === "easy") return "易";
+        if (diff === 1 || diff === "medium") return "中";
+        return "難";
     }
 
     return (
         <div className="w-full max-w-4xl mx-auto space-y-6 mt-16">
             <h3 className="text-xl font-semibold text-zinc-100 flex items-center gap-2 mb-8">
                 <Target className="h-5 w-5 text-primary" />
-                현재 진행 중인 목표
+                現在進行中の目標
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -44,7 +44,7 @@ export default function GoalList({ goals }: GoalListProps) {
                     >
                         <div className="flex flex-col items-center mb-4">
                             <GoalCharacter
-                                progress={Math.round((goal.current_xp / goal.target_xp) * 100)}
+                                currentXp={goal.current_xp}
                                 title={goal.title}
                                 size={88}
                             />
@@ -55,13 +55,13 @@ export default function GoalList({ goals }: GoalListProps) {
                                 {goal.title}
                             </h4>
                             <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-medium text-zinc-300">
-                                난이도: {getDifficultyLabel(goal.difficulty)}
+                                難易度: {getDifficultyLabel(goal.difficulty)}
                             </span>
                         </div>
                         
                         <div className="mt-auto flex flex-col gap-2">
                             <div className="flex justify-between items-end text-sm">
-                                <span className="text-zinc-400">진행률</span>
+                                <span className="text-zinc-400">進捗</span>
                                 <span className="font-semibold text-primary">
                                     {Math.round((goal.current_xp / goal.target_xp) * 100)}%
                                 </span>

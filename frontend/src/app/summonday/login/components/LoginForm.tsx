@@ -20,12 +20,12 @@ export function LoginForm() {
             if (res?.error) {
                 setError(res.error);
             } else {
-                setSuccess(isLogin ? "로그인 성공! 대시보드로 이동합니다." : "회원가입 성공! 환영합니다.");
+                setSuccess(isLogin ? "ログイン成功！ダッシュボードに移動します。" : "会員登録成功！ようこそ！");
             }
         } catch (e: any) {
             // Next.js redirect() throws an error to perform the redirect, which we ignore/treat as success.
             if (e.message?.includes("NEXT_REDIRECT")) {
-                setSuccess(isLogin ? "로그인 성공! 대시보드로 이동합니다." : "회원가입 성공! 환영합니다.");
+                setSuccess(isLogin ? "ログイン成功！ダッシュボードに移動します。" : "会員登録成功！ようこそ！");
             } else {
                 setError(e.message || "Something went wrong.");
             }

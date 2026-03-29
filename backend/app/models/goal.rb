@@ -13,10 +13,10 @@ class Goal < ApplicationRecord
 
   def set_target_xp
     self.target_xp ||= case difficulty
-                       when "easy" then 1000
-                       when "medium" then 5000
-                       when "hard" then 10000
-                       else 1000
+                       when "easy" then 300
+                       when "medium" then 500
+                       when "hard" then 1000
+                       else 300
                        end
   end
 end

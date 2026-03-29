@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_061619) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_072641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -30,6 +30,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_061619) do
     t.boolean "deleted", default: false, null: false
     t.integer "difficulty"
     t.vector "embedding", limit: 3072
+    t.boolean "is_main", default: false, null: false
     t.integer "status", default: 0
     t.integer "target_xp"
     t.string "title"

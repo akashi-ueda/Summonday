@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { abandonGoalAction, restoreGoalAction } from "../../actions";
-import { Target, Archive, RefreshCw, XCircle, Loader2 } from "lucide-react";
+import { abandonGoalAction, restoreGoalAction, setMainGoalAction } from "../../actions";
+import { Target, Archive, RefreshCw, XCircle, Loader2, Star } from "lucide-react";
 import GoalCharacter from "../../dashboard/components/GoalCharacter";
 
 interface Goal {
@@ -13,6 +13,7 @@ interface Goal {
     current_xp: number;
     target_xp: number;
     status: number;
+    is_main: boolean;
 }
 
 interface GoalManagerProps {
@@ -36,6 +37,12 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
         setLoadingId(null);
     };
 
+    const handleSetMain = async (id: number) => {
+        setLoadingId(id);
+        await setMainGoalAction(id);
+        setLoadingId(null);
+    };
+
     const renderGoalCard = (goal: Goal, isAbandoned: boolean) => (
         <motion.div
             layout
@@ -48,7 +55,7 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
             <div>
                 <div className="flex flex-col items-center mb-4">
                     <GoalCharacter
-                        progress={Math.round((goal.current_xp / goal.target_xp) * 100)}
+                        currentXp={goal.current_xp}
                         title={isAbandoned ? "" : goal.title}
                         size={80}
                     />
@@ -61,7 +68,7 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
                 
                 <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-end text-sm">
-                        <span className="text-zinc-500">경험치 진행률</span>
+                        <span className="text-zinc-500">経験値進捗</span>
                         <span className={`font-semibold ${isAbandoned ? 'text-zinc-600' : 'text-primary'}`}>
                             {Math.round((goal.current_xp / goal.target_xp) * 100)}%
                         </span>
@@ -75,26 +82,42 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
                 </div>
             </div>
 
-            <div className="mt-6 flex justify-end">
-                {isAbandoned ? (
+            <div className="mt-6 flex justify-between items-center gap-2">
+                {!isAbandoned && (
                     <button
-                        onClick={() => handleRestore(goal.id)}
+                        onClick={() => handleSetMain(goal.id)}
                         disabled={loadingId === goal.id}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 ${
+                            goal.is_main
+                                ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 cursor-default'
+                                : 'text-zinc-500 hover:text-yellow-400 hover:bg-yellow-500/10 border border-transparent'
+                        }`}
                     >
-                        {loadingId === goal.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-                        다시 시작하기
-                    </button>
-                ) : (
-                    <button
-                        onClick={() => handleAbandon(goal.id)}
-                        disabled={loadingId === goal.id}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/10 transition-colors disabled:opacity-50"
-                    >
-                        {loadingId === goal.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
-                        목표 포기하기
+                        <Star className={`w-3.5 h-3.5 ${goal.is_main ? 'fill-yellow-400' : ''}`} />
+                        {goal.is_main ? 'メイン目標' : 'メインに設定'}
                     </button>
                 )}
+                <div className="ml-auto">
+                    {isAbandoned ? (
+                        <button
+                            onClick={() => handleRestore(goal.id)}
+                            disabled={loadingId === goal.id}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                        >
+                            {loadingId === goal.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                            もう一度始める
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => handleAbandon(goal.id)}
+                            disabled={loadingId === goal.id}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                        >
+                            {loadingId === goal.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                            目標を断念する
+                        </button>
+                    )}
+                </div>
             </div>
         </motion.div>
     );
@@ -107,7 +130,7 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
                     className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${tab === "active" ? "bg-white text-black shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
                 >
                     <Target className="w-4 h-4" />
-                    진행 중인 목표
+                    進行中の目標
                     <span className={`ml-1.5 px-2 py-0.5 rounded-full text-xs ${tab === "active" ? "bg-black/10" : "bg-white/10"}`}>{activeGoals.length}</span>
                 </button>
                 <button
@@ -115,7 +138,7 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
                     className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${tab === "abandoned" ? "bg-white text-black shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
                 >
                     <Archive className="w-4 h-4" />
-                    포기한 목표
+                    断念した目標
                     <span className={`ml-1.5 px-2 py-0.5 rounded-full text-xs ${tab === "abandoned" ? "bg-black/10" : "bg-white/10"}`}>{abandonedGoals.length}</span>
                 </button>
             </div>
@@ -127,7 +150,7 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
                             activeGoals.map(g => renderGoalCard(g, false))
                         ) : (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-full py-12 text-center border border-dashed border-white/10 rounded-2xl">
-                                <p className="text-zinc-500">진행 중인 목표가 없습니다.</p>
+                                <p className="text-zinc-500">進行中の目標がありません。</p>
                             </motion.div>
                         )
                     ) : (
@@ -135,7 +158,7 @@ export default function GoalManager({ activeGoals, abandonedGoals }: GoalManager
                             abandonedGoals.map(g => renderGoalCard(g, true))
                         ) : (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-full py-12 text-center border border-dashed border-white/10 rounded-2xl">
-                                <p className="text-zinc-500">포기한 목표가 텅 비었습니다. 훌륭해요!</p>
+                                <p className="text-zinc-500">断念した目標は空っぽです。素晴らしい！</p>
                             </motion.div>
                         )
                     )}

@@ -26,7 +26,7 @@ export default function TaskPrompt({ user }: TaskPromptProps) {
             setResult(response);
             if (response.success) setTitle("");
         } catch (err) {
-            setResult({ error: "네트워크 오류가 발생했습니다." });
+            setResult({ error: "ネットワークエラーが発生しました。" });
         } finally {
             setIsLoading(false);
         }
@@ -34,7 +34,7 @@ export default function TaskPrompt({ user }: TaskPromptProps) {
 
     return (
         <div className="w-full">
-            {/* 피드백 - 입력창 위에 浮동 팝업 */}
+            {/* フィードバック - 入力欄の上に浮かび上がるポップアップ */}
             <AnimatePresence mode="popLayout">
                 {result && (
                     <motion.div
@@ -71,7 +71,7 @@ export default function TaskPrompt({ user }: TaskPromptProps) {
                 )}
             </AnimatePresence>
 
-            {/* 입력창 */}
+            {/* 入力欄 */}
             <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
                 <div className="flex items-center gap-2 shrink-0 text-primary">
                     <Footprints className="h-5 w-5" />
@@ -81,7 +81,7 @@ export default function TaskPrompt({ user }: TaskPromptProps) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     disabled={isLoading}
-                    placeholder="오늘 실천한 습관을 입력하세요..."
+                    placeholder="今日実践した習慣を入力してください..."
                     className="flex-1 h-12 px-4 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 transition-all focus:border-primary/50 focus:bg-white/10 focus:outline-none focus:ring-1 focus:ring-primary/30 disabled:opacity-50"
                 />
                 <button

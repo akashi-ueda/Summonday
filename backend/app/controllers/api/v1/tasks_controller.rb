@@ -1,21 +1,21 @@
 class Api::V1::TasksController < ApplicationController
   def create
-    return render json: { error: "제목이 필요합니다." }, status: :bad_request if params[:title].blank?
+    return render json: { error: "タイトルが必要です。" }, status: :bad_request if params[:title].blank?
 
     analyzer = AiTaskAnalyzer.new(params[:title])
     
     begin
-      # 항상 AI 분석 수행
+      # 常にAI分析を実行
       analysis = analyzer.analyze_task
       embedding = analyzer.generate_embedding
       
-      # 진행 중인 목표(status: active) 중 삭제되지 않고 임베딩 거리가 0.38 미만인 것들을 먼저 찾기
+      # 進行中の目標（status: active）のうち、削除されておらず埋め込み距離が0.28未満のものをまず探す
       related_goals = Goal.active.not_deleted.where(user_id: params[:user_id]).nearest_neighbors(:embedding, embedding, distance: "cosine")
       
-      # 0.38 이내의 목표가 하나도 없다면 습관으로 인정하지 않음
-      if related_goals.none? || related_goals.first.neighbor_distance >= 0.38
+      # 0.28以内の目標が一つもなければ習慣として認めない
+      if related_goals.none? || related_goals.first.neighbor_distance >= 0.28
         return render json: { 
-          error: "현재 설정하신 어떤 목표와도 일치하지 않는 행동입니다. 목표와 관련된 습관을 기록해 보세요!", 
+          error: "目標に関連のない行動です。もっと具体的に入力するか、目標と結びつく習慣を記録してください！", 
           distance: related_goals.first&.neighbor_distance 
         }, status: :unprocessable_entity
       end
@@ -35,10 +35,10 @@ class Api::V1::TasksController < ApplicationController
         return render json: { errors: task.errors }, status: :unprocessable_entity
       end
 
-      # 연관된 목표 리스트 구성
+      # 関連する目標リストを構成
       affected_goals = []
       related_goals.each do |goal|
-        next if goal.neighbor_distance >= 0.38
+        next if goal.neighbor_distance >= 0.28
         
         goal.current_xp += gained_xp
         goal.status = :completed if goal.current_xp >= goal.target_xp
@@ -55,7 +55,7 @@ class Api::V1::TasksController < ApplicationController
       end
       
       render json: {
-        message: "새로운 습관이 추가되었습니다.",
+        message: "新しい習慣が追加されました。",
         task: task,
         affected_goals: affected_goals
       }, status: :created
@@ -66,7 +66,7 @@ class Api::V1::TasksController < ApplicationController
     rescue AiTaskAnalyzer::ParserError, AiTaskAnalyzer::ApiError => e
       render json: { error: e.message }, status: :bad_gateway
     rescue StandardError => e
-      render json: { error: "예기치 못한 오류가 발생했습니다: #{e.message}" }, status: :internal_server_error
+      render json: { error: "予期しないエラーが発生しました: #{e.message}" }, status: :internal_server_error
     end
   end
 

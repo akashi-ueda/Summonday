@@ -26,7 +26,7 @@ export default function GoalPrompt({ user }: GoalPromptProps) {
             setResult(response);
             if (response.success) setTitle("");
         } catch (err) {
-            setResult({ error: "네트워크 오류가 발생했습니다." });
+            setResult({ error: "ネットワークエラーが発生しました。" });
         } finally {
             setIsLoading(false);
         }
@@ -43,8 +43,8 @@ export default function GoalPrompt({ user }: GoalPromptProps) {
                         <Target className="h-5 w-5" />
                     </div>
                     <div>
-                        <h2 className="text-xl font-semibold text-white tracking-tight">당신의 목표는 무엇인가요?</h2>
-                        <p className="text-sm text-white/60 mt-1">{user.name}님의 새로운 여정을 들려주세요.</p>
+                        <h2 className="text-xl font-semibold text-white tracking-tight">あなたの目標は何ですか？</h2>
+                        <p className="text-sm text-white/60 mt-1">{user.name}さんの新しい旅を教えてください。</p>
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@ export default function GoalPrompt({ user }: GoalPromptProps) {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             disabled={isLoading}
-                            placeholder="예: 매일 아침 30분 달리기, 5kg 감량하기"
+                            placeholder="例: 毎朝30分ランニング、体重5kg減らす"
                             className="w-full h-14 pl-5 pr-14 rounded-xl border border-white/10 bg-white/5 text-base text-white placeholder:text-white/40 transition-all focus:border-primary/50 focus:bg-white/10 focus:outline-none focus:ring-1 focus:ring-primary/50 disabled:opacity-50"
                         />
                         <button
@@ -85,13 +85,13 @@ export default function GoalPrompt({ user }: GoalPromptProps) {
                                     <Sparkles className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                                     <div>
                                         <h4 className="text-sm font-semibold text-green-100 flex items-center gap-2">
-                                            멋진 목표가 설정되었습니다!
+                                            素晴らしい目標が設定されました！
                                             <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">
-                                                {result.goal.difficulty === "easy" ? "하" : result.goal.difficulty === "medium" ? "중" : "상"} 난이도
+                                                {result.goal.difficulty === "easy" ? "易" : result.goal.difficulty === "medium" ? "中" : "難"} 難易度
                                             </span>
                                         </h4>
                                         <p className="text-sm text-green-100/70 mt-1">
-                                            "{result.goal.title}" 목표가 안전하게 분석되어 기록되었습니다. 이제 작은 습관들을 시작해 보세요.
+                                            「{result.goal.title}」の目標が分析・記録されました。小さな習慣から始めましょう。
                                         </p>
                                     </div>
                                 </div>

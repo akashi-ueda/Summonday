@@ -16,6 +16,7 @@ Rails.application.routes.draw do
         member do
           patch :abandon
           patch :restore
+          patch :set_main
         end
       end
       

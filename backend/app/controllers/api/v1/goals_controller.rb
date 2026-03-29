@@ -6,23 +6,23 @@ class Api::V1::GoalsController < ApplicationController
 
   def create
     if params[:title].blank?
-      return render json: { error: "목표 제목이 필요합니다." }, status: :bad_request
+      return render json: { error: "目標のタイトルが必要です。" }, status: :bad_request
     end
 
     begin
       analyzer = AiTaskAnalyzer.new(params[:title])
       
-      # 1. AI를 통한 난이도 분석
+      # 1. AIによる難易度分析
       analysis = analyzer.analyze_goal
       
-      # 2. 임베딩(벡터) 생성
+      # 2. 埋め込み（ベクトル）の生成
       embedding = analyzer.generate_embedding
 
       goal = Goal.new(
         title: params[:title],
         difficulty: analysis[:difficulty],
         embedding: embedding,
-        user_id: params[:user_id] # 사용자 아이디 추가
+        user_id: params[:user_id] # ユーザーIDを追加
       )
 
       if goal.save
@@ -37,25 +37,35 @@ class Api::V1::GoalsController < ApplicationController
     rescue AiTaskAnalyzer::ParserError, AiTaskAnalyzer::ApiError => e
       render json: { error: e.message }, status: :bad_gateway
     rescue StandardError => e
-      render json: { error: "예기치 못한 오류가 발생했습니다: #{e.message}" }, status: :internal_server_error
+      render json: { error: "予期しないエラーが発生しました: #{e.message}" }, status: :internal_server_error
     end
   end
 
   def abandon
     goal = Goal.find(params[:id])
     if goal.update(deleted: true)
-      render json: { message: "목표를 포기했습니다.", goal: goal }, status: :ok
+      render json: { message: "目標を断念しました。", goal: goal }, status: :ok
     else
-      render json: { error: "상태 변경에 실패했습니다." }, status: :unprocessable_entity
+      render json: { error: "状態の変更に失敗しました。" }, status: :unprocessable_entity
     end
   end
 
   def restore
     goal = Goal.find(params[:id])
     if goal.update(deleted: false)
-      render json: { message: "목표를 복구했습니다.", goal: goal }, status: :ok
+      render json: { message: "目標を復元しました。", goal: goal }, status: :ok
     else
-      render json: { error: "상태 변경에 실패했습니다." }, status: :unprocessable_entity
+      render json: { error: "状態の変更に失敗しました。" }, status: :unprocessable_entity
+    end
+  end
+  def set_main
+    goal = Goal.find(params[:id])
+    # 当該ユーザーの既存のメイン目標をすべて解除してから新たに設定
+    Goal.where(user_id: goal.user_id).update_all(is_main: false)
+    if goal.update(is_main: true)
+      render json: { message: "メイン目標に設定しました。", goal: goal }, status: :ok
+    else
+      render json: { error: "メイン目標の設定に失敗しました。" }, status: :unprocessable_entity
     end
   end
 end
