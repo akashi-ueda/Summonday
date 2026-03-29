@@ -7,4 +7,21 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  namespace :api do
+    namespace :v1 do
+      resources :tasks, only: [:create] do
+        get :similar, on: :member
+      end
+      resources :goals, only: [:index, :create] do
+        member do
+          patch :abandon
+          patch :restore
+          patch :set_main
+        end
+      end
+      
+      post 'signup', to: 'users#create'
+      post 'login', to: 'auth#login'
+    end
+  end
 end
